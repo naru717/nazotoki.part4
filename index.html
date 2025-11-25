@@ -61,18 +61,19 @@
     display:flex; flex-direction:column; align-items:center; text-align:center; gap:10px;
   }
   .hero img{ width:min(68vw, 300px); height:auto; border-radius:24px; box-shadow:0 10px 26px rgba(0,0,0,.12); }
+
   .speech{
     background:#ffffff; border:2px solid #ffd5ec; border-radius:18px; padding:12px 14px; line-height:1.7;
     position:relative; max-width:680px;
   }
-  .speech:after{
-    content:""; position:absolute; top:100%; left:50%; transform:translateX(-50%);
-    border:10px solid transparent; border-top-color:#ffd5ec;
-  }
-  .speech:before{
-    content:""; position:absolute; top:calc(100% + 2px); left:50%; transform:translateX(-50%);
-    border:10px solid transparent; border-top-color:#ffffff;
-  }
+  .speech:after{content:""; position:absolute; top:100%; left:50%; transform:translateX(-50%);
+    border:10px solid transparent; border-top-color:#ffd5ec;}
+  .speech:before{content:""; position:absolute; top:calc(100% + 2px); left:50%; transform:translateX(-50%);
+    border:10px solid transparent; border-top-color:#ffffff;}
+
+  .type-line{min-height:1.8em; white-space:pre-wrap; line-height:1.9;}
+  .pause-dot{animation:blink 1.4s ease-in-out infinite;}
+  @keyframes blink{0%,100%{opacity:.2} 50%{opacity:1}}
 
   .stamp{position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(255,255,255,.75); z-index:50;}
   .stamp img{width:min(70vw,380px); height:auto; filter:drop-shadow(0 10px 24px rgba(0,0,0,.2)); animation:pop .5s ease;}
@@ -100,73 +101,25 @@
     position:absolute; top:-10px; width:10px; height:16px; opacity:.9;
     animation:fall 2.8s linear forwards; transform:rotate(0deg);
   }
-  @keyframes fall{
-    0%{ transform:translateY(-10px) rotate(0deg); }
-    100%{ transform:translateY(120vh) rotate(540deg); }
-  }
+  @keyframes fall{0%{ transform:translateY(-10px) rotate(0deg);}100%{ transform:translateY(120vh) rotate(540deg);} }
   .sparkles{ pointer-events:none; position:absolute; inset:0; }
   .spark{
     position:absolute; width:10px; height:10px; background:radial-gradient(circle, var(--spark) 0%, rgba(255,255,255,0) 70%);
     animation:blink 1.6s ease-in-out infinite;
-  }
-  @keyframes blink{ 0%,100%{opacity:0.2} 50%{opacity:1} }
-
-  .fortune-wrap{ display:flex; flex-direction:column; align-items:center; gap:10px; margin-top:10px; }
-  .tarot-hero{
-    width:min(62vw, 260px); height:auto; border-radius:22px;
-    box-shadow:0 12px 24px rgba(0,0,0,.12);
-    outline:4px solid rgba(255,213,236,.6);
-  }
-  .fortune-lines{
-    background:#ffffff; border:2px solid #ffd5ec; border-radius:16px; padding:10px 12px; line-height:1.9;
-    min-height:72px; max-width:680px; text-align:left;
-  }
-  .fortune-line{ opacity:0; transform:translateY(4px); animation:fade .3s ease forwards; }
-
-  .tarot-table{display:flex; gap:10px; justify-content:center; margin-top:12px; flex-wrap:wrap;}
-  .tarot-card{
-    width:96px; height:140px; border-radius:12px;
-    background:linear-gradient(180deg,#fff8fb,#ffe6f4);
-    border:2px solid #ffc9e8; box-shadow:0 6px 16px rgba(255,122,198,.25);
-    display:flex; align-items:center; justify-content:center; font-weight:800; color:#7a2856; position:relative;
-  }
-  .tarot-card .cap{
-    position:absolute; bottom:6px; left:0; right:0; text-align:center; font-size:12px; color:#92415f;
-  }
-  .tarot-card.reversed{ transform:rotate(180deg); }
-
-  .advice-title{
-    font-weight:800; color:#7a2856; margin-top:14px; font-size:17px; text-align:left;
-    background:#fff5fa; border-left:5px solid #ffb8e0; padding:8px 10px; border-radius:10px;
-    animation:fade .6s ease;
   }
 
   /* 星座選択用 */
   .zodiac-grid{
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
-    gap:8px;
-    margin-top:10px;
+    gap:8px; margin-top:10px;
   }
   .zodiac-btn{
-    padding:10px 12px;
-    border-radius:14px;
-    border:2px solid #ffe0f2;
-    background:#ffffff;
-    cursor:pointer;
-    font-size:14px;
-    text-align:center;
-    line-height:1.4;
+    padding:10px 12px; border-radius:14px; border:2px solid #ffe0f2;
+    background:#ffffff; cursor:pointer; font-size:14px; text-align:center; line-height:1.4;
   }
-  .zodiac-btn span{
-    display:block;
-    font-size:12px;
-    color:#9ca3af;
-  }
-  .zodiac-btn:hover{
-    background:#fff7fc;
-    border-color:#ffb3dc;
-  }
+  .zodiac-btn span{display:block; font-size:12px; color:#9ca3af;}
+  .zodiac-btn:hover{background:#fff7fc; border-color:#ffb3dc;}
 </style>
 </head>
 <body>
@@ -206,21 +159,32 @@
       </div>
 
       <div style="margin-top:16px;">
-        <button class="btn" id="go-pre" onclick="goPre()">次へ</button>
+        <button class="btn" onclick="goPre()">次へ</button>
       </div>
     </section>
 
-    <!-- 2ページ目：星座選択画面 -->
-    <section id="screen-pre" class="card fade" style="display:none;">
-      <div style="text-align:center; margin:10px 0;">
-        <img src="./toseiuranai.png" alt="星占いをする とせいくん" class="tarot-hero" />
+    <!-- 2ページ目：お知らせ（タイプライター演出） -->
+    <section id="screen-announce" class="card fade" style="display:none;">
+      <div class="hero">
+        <img src="toseikirakira.png" alt="キラキラとせいくん" />
+        <div class="speech">
+          <div id="typeL1" class="type-line"></div>
+          <div id="typeL2" class="type-line" style="margin-top:6px;"></div>
+          <div id="typeL3" class="type-line" style="margin-top:6px;"></div>
+        </div>
       </div>
-      <div class="muted-box" style="margin:10px 0 14px;">
-        <strong id="pre-title">第４弾『とうせいの謎（がんと緩和ケア）』へようこそ！</strong><br>
-        今回は<strong>星占い</strong>だよ。星座によって<strong>2025年11月の運勢</strong>を占ってみよう！<br>
-        あなたの星座を教えてね。
+      <div style="margin-top:14px; text-align:center;">
+        <button id="to-zodiac-btn" class="btn" onclick="toZodiac()" disabled>次へ</button>
       </div>
+    </section>
 
+    <!-- 3ページ目：星座選択画面 -->
+    <section id="screen-zodiac" class="card fade" style="display:none;">
+      <div class="muted-box" style="margin:10px 0 14px; line-height:1.9;">
+        <p><strong>今年も残りわずかになってきたね。</strong></p>
+        <p>今年の残りの<strong>星占い</strong>をしちゃおうかな？</p>
+        <p><strong>星座を教えて</strong>ね。</p>
+      </div>
       <div class="zodiac-grid">
         <button class="zodiac-btn" onclick="selectZodiac('aries')">おひつじ座<span>Aries</span></button>
         <button class="zodiac-btn" onclick="selectZodiac('taurus')">おうし座<span>Taurus</span></button>
@@ -237,40 +201,28 @@
       </div>
     </section>
 
-    <!-- 3ページ目：星座別の2025年11月の運勢＋がんの導入 -->
+    <!-- 4ページ目：星占い結果（前の構成を継承） -->
     <section id="screen-diag-result" class="card fade" style="display:none;">
       <div id="type-title" class="question">とせいくんの星座占い</div>
       <div id="type-copy" class="lead"></div>
 
-      <div class="fortune-wrap">
-        <img src="mame2.png" alt="星を見上げるとせいくん" class="tarot-hero" />
-        <div class="tarot-table" id="tarot-table"></div>
-        <div id="fortune-lines" class="fortune-lines"></div>
+      <div class="hero" style="margin-top:8px;">
+        <img src="mame2.png" alt="星を見るとせいくん" class="tarot-hero" />
       </div>
 
-      <div id="advice-title" class="advice-title" style="display:none;">
+      <div class="fortune-lines" id="fortune-lines" style="margin-top:10px;"></div>
+      <div id="advice-title" class="advice-title" style="display:none; margin-top:12px;">
         🔭 2025年11月のラッキーアドバイス
       </div>
       <ul id="type-desc" style="text-align:left; line-height:1.8; margin-top:8px;"></ul>
 
-      <div class="muted-box" style="margin-top:12px; line-height:1.9; text-align:left;">
-        <p><strong>星座占いはどうだった？</strong></p>
-        <p>ぼくは<strong>蟹座</strong>なんだけど、蟹座って英語で言うとなんて読むか知ってる？？</p>
-        <p>そう！ <strong>Cancer（キャンサー）</strong>。あれれ…どこかで聞いたことがある病気と同じだ…。</p>
-        <p>今や<strong>2人に1人が罹る</strong>と言われている「癌」と同じなんだよね。</p>
-        <p>乳癌のしこりが、蟹が張り付いているように見えることから、「蟹」を意味するギリシャ語が語源だって話！ふむふむ…</p>
-        <p><strong>なんだかもう少し「がん」のことが知りたくなってきた！！</strong><br>
-        さあ、がんと緩和ケア、多職種連携についての<strong>謎解きクイズ</strong>にチャレンジしてみよう。</p>
+      <div class="muted-box" style="margin-top:14px;">
+        では<strong>謎解き第４弾</strong>を始めよう！
       </div>
-
-      <div class="muted-box" style="margin-top:10px;">
-        それでは、<strong>第４弾：とうせいの謎（がんと緩和ケア編）</strong>の第1問へ！<br/>
-        あなたの知識をレベルアップさせよう！
-      </div>
-      <button class="btn" id="to-quiz" onclick="toQuiz()" style="margin-top:14px;">第1問へ進む</button>
+      <button class="btn" onclick="toQuiz()" style="margin-top:12px;">第1問へ進む</button>
     </section>
 
-    <!-- 4〜6ページ目：クイズ（3問） -->
+    <!-- 5〜7ページ目：クイズ（3問） -->
     <section id="screen-quiz" class="card fade" style="display:none;">
       <div id="story" class="lead" style="margin-bottom:8px;"></div>
       <div style="text-align:center; margin:10px 0;">
@@ -285,17 +237,45 @@
       </div>
     </section>
 
-    <!-- 7ページ目：エンディング -->
+    <!-- 8ページ目：チーム紹介・導入 -->
+    <section id="screen-teams-intro" class="card fade" style="display:none;">
+      <div class="hero">
+        <img src="toseikirakira.png" alt="キラキラとせいくん" />
+        <div class="speech">
+          <strong>ではお待ちかねの出場チームの紹介だ！！</strong>
+        </div>
+      </div>
+      <div style="margin-top:14px; text-align:center;">
+        <button class="btn" onclick="startTeams()">次へ</button>
+      </div>
+    </section>
+
+    <!-- 9〜16ページ目：各チーム（動的表示） -->
+    <section id="screen-team-detail" class="card fade" style="display:none;">
+      <div class="hero">
+        <img src="toseikirakira.png" alt="キラキラとせいくん" />
+        <div class="speech">
+          <div id="team-title" class="question" style="margin:0;"></div>
+          <div id="team-body" class="lead" style="margin-top:8px;"></div>
+        </div>
+      </div>
+      <div style="margin-top:14px; text-align:center;">
+        <button class="btn" id="team-next-btn" onclick="nextTeam()">次へ</button>
+      </div>
+    </section>
+
+    <!-- 最終ページ：全チーム一覧・締め -->
     <section id="screen-ending" class="card fade" style="display:none;">
       <div class="ending-wrap">
-        <div class="ending-title">🎉 クリアおめでとう！（第４弾）</div>
-        <img src="nazotoki2.png" alt="とせいくん" class="tarot-hero" />
-
+        <div class="ending-title">👏 以上が出場チームだ！</div>
+        <img src="nazotoki.png" alt="とせいくん" class="tarot-hero" />
         <div class="ending-lines">
-          <div class="ending-badge">とうせいの謎・がん連携マスター</div>
-          <div id="ending-text" style="margin-top:6px;"></div>
-          <div style="margin-top:6px;">
-            TMCのことで聞きたいことがあれば、いつでも <strong>PHS6693</strong> に連絡してね。
+          <div class="ending-badge">TMC出場チーム一覧</div>
+          <ul id="team-list" style="text-align:left; margin:8px 0 0; padding-left:18px;"></ul>
+          <div style="margin-top:8px;">
+            みんなはどのチームを応援する？ 次回<strong>第５弾</strong>で投票してみようかな？<br>
+            上位チームにはTMCで使える<strong>アイテム</strong>を贈呈しちゃおうかな？<br>
+            では次まで<strong>ごきげんよう。</strong>
           </div>
         </div>
         <div class="ending-actions">
@@ -310,32 +290,32 @@
     </section>
   </div>
 
+  <!-- スタンプ -->
   <div id="stamp" class="stamp" aria-hidden="true">
-    <img src="nazotoki2.png" alt="正解スタンプ" />
+    <img src="nazotoki.png" alt="正解スタンプ" />
   </div>
 
-  <audio id="bgm" src="nazotoki2.mp3" preload="none" loop></audio>
+  <!-- 音源 -->
+  <audio id="bgmAnnounce" src="nazotoki2.mp3" preload="none" loop></audio>
+  <audio id="bgmTeams" src="hajimari.mp3" preload="none" loop></audio>
   <audio id="seClick" src="pochi.mp3" preload="auto"></audio>
+  <audio id="seApplause" src="seikou.mp3" preload="auto"></audio>
   <audio id="seCorrect" src="pinpon.mp3" preload="auto"></audio>
-  <audio id="seClear" src="seikou.mp3" preload="auto"></audio>
 
 <script>
-const GOOGLE_FORM_ACTION = 
-
-const ENTRY_NAME = "entry.6";
-const ENTRY_DEPT = "entry.2";
-const ENTRY_JOB  = "entry.6";
+/* ====== 初期セット ====== */
+const GOOGLE_FORM_ACTION = ""; // 必要ならURLを入れて有効化
+const ENTRY_NAME = "entry.name";
+const ENTRY_DEPT = "entry.dept";
+const ENTRY_JOB  = "entry.job";
 
 function sendToGoogleForm({ name, dept, job }) {
+  if(!GOOGLE_FORM_ACTION) return; // 未設定なら送信しない
   const fd = new FormData();
   fd.append(ENTRY_NAME, name);
   fd.append(ENTRY_DEPT, dept);
   fd.append(ENTRY_JOB, job);
-  fetch(GOOGLE_FORM_ACTION, {
-    method: "POST",
-    body: fd,
-    mode: "no-cors"
-  });
+  fetch(GOOGLE_FORM_ACTION, { method: "POST", body: fd, mode: "no-cors" });
 }
 
 const nameEl  = document.getElementById('name');
@@ -343,224 +323,80 @@ const groupEl = document.getElementById('group');
 const jobEl   = document.getElementById('job');
 
 const screenIntro = document.getElementById('screen-intro');
-const screenPre   = document.getElementById('screen-pre');
+const screenAnn   = document.getElementById('screen-announce');
+const screenZodiac= document.getElementById('screen-zodiac');
 const screenDiagResult = document.getElementById('screen-diag-result');
 const screenQuiz  = document.getElementById('screen-quiz');
+const screenTeamsIntro = document.getElementById('screen-teams-intro');
+const screenTeamDetail = document.getElementById('screen-team-detail');
 const screenEnding= document.getElementById('screen-ending');
 
-const preTitle = document.getElementById('pre-title');
-const stampEl = document.getElementById('stamp');
-
-const storyEl = document.getElementById('story');
-const qTitleEl = document.getElementById('q-title');
-const choicesEl = document.getElementById('choices');
-const judgeEl = document.getElementById('judge');
-const explainEl = document.getElementById('explain');
-const nextArea = document.getElementById('next-area');
-const nextBtn  = document.getElementById('next-btn');
-const endingText = document.getElementById('ending-text');
-const quizImgEl = document.getElementById('quiz-img');
-const confettiEl = document.getElementById('confetti');
-const sparklesEl = document.getElementById('sparkles');
-
-const fortuneLinesEl = document.getElementById('fortune-lines');
-const finishBtn = document.getElementById('finish-btn');
-const finishMessage = document.getElementById('finish-message');
-const tarotTable = document.getElementById('tarot-table');
-
-const bgm = document.getElementById('bgm');
-const seClick = document.getElementById('seClick');
-const seCorrect = document.getElementById('seCorrect');
-const seClear = document.getElementById('seClear');
-let bgmStarted = false;
-
-function playClick(){ try{ seClick.currentTime = 0; seClick.play(); }catch(e){} }
-function playCorrect(){ try{ seCorrect.currentTime = 0; seCorrect.play(); }catch(e){} }
-function ensureBGM(){
-  if(!bgmStarted){
-    bgmStarted = true;
-    try{ bgm.volume = 0.8; bgm.play(); }catch(e){}
-  }
-}
-
-document.addEventListener('click', function(e){
-  const btn = e.target.closest('button');
-  if (!btn) return;
-  if (btn.classList.contains('choice-btn')) return;
-  playClick();
-}, true);
-
-function hideAll(){ [screenIntro,screenPre,screenDiagResult,screenQuiz,screenEnding].forEach(e=>e.style.display='none'); }
+function hideAll(){ [screenIntro,screenAnn,screenZodiac,screenDiagResult,screenQuiz,screenTeamsIntro,screenTeamDetail,screenEnding].forEach(e=>e.style.display='none'); }
 function show(el){ hideAll(); el.style.display='block'; window.scrollTo({top:0,behavior:'smooth'}); }
 show(screenIntro);
+
+/* ====== サウンド ====== */
+const bgmAnnounce = document.getElementById('bgmAnnounce');
+const bgmTeams = document.getElementById('bgmTeams');
+const seApplause = document.getElementById('seApplause');
+const seClick = document.getElementById('seClick');
+const seCorrect = document.getElementById('seCorrect');
+
+document.addEventListener('click', e=>{
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  if(btn.classList.contains('choice-btn')) return;
+  try{ seClick.currentTime = 0; seClick.play(); }catch(e){}
+}, true);
+
+/* ====== 1 → 2：タイプライター演出 ====== */
+const L1 = "TMCマスコットキャラクターのとせいくんだよ。今日はみんなに嬉しいお知らせがあるんだ。";
+const L2 = "なんとTMCの出場チームが決まったよ！！";
+const L3 = "謎解きの後に出場チームの紹介をしようと思ってる。どんなチームが出るのか楽しみだね。";
+
+function typeLine(el, text, speed=28){
+  return new Promise(resolve=>{
+    el.textContent = "";
+    let i=0;
+    const timer = setInterval(()=>{
+      el.textContent += text[i++];
+      if(i>=text.length){ clearInterval(timer); resolve(); }
+    }, speed);
+  });
+}
 
 window.goPre = function(){
   if(!nameEl.value.trim()){ nameEl.focus(); nameEl.style.borderColor='#ff8dc7'; return; }
   nameEl.style.borderColor='#ffdff0';
-  preTitle.textContent = "第４弾『とうせいの謎（がんと緩和ケア）』へようこそ、 " + nameEl.value + " さん。まずはあなたの星座を教えてね。";
   sendToGoogleForm({ name: nameEl.value, dept: groupEl.value, job: jobEl.value });
-  show(screenPre);
+  // BGM開始（2ページ目で流す）
+  try{ bgmAnnounce.volume = 0.85; bgmAnnounce.play(); }catch(e){}
+  show(screenAnn);
+  // セリフ順番に
+  (async ()=>{
+    const el1 = document.getElementById('typeL1');
+    const el2 = document.getElementById('typeL2');
+    const el3 = document.getElementById('typeL3');
+    await typeLine(el1, L1);
+    await new Promise(r=>setTimeout(r, 3000)); // 3秒待機
+    await typeLine(el2, L2);
+    try{ seApplause.currentTime = 0; seApplause.play(); }catch(e){}
+    await new Promise(r=>setTimeout(r, 600));
+    await typeLine(el3, L3);
+    document.getElementById('to-zodiac-btn').disabled = false;
+  })();
 };
 
-/* ===== 星座別 2025年11月の運勢データ ===== */
-const zodiacData = {
-  aries: {
-    label: "おひつじ座（Aries）",
-    keyword: "チャレンジとスタート",
-    lines: [
-      "2025年11月は、「やってみよう！」の一歩が大きな成長につながる月。",
-      "新しい係やプロジェクトに手を挙げると、思った以上に楽しくなりそう。",
-      "ちょっとドキドキする場面でも、あなたの行動力がチームを前に進めるよ。"
-    ],
-    tips: [
-      "気になる勉強会や研修にひとつ参加してみる。",
-      "「これならできそう」という小さな目標を1つ決めて取り組む。"
-    ]
-  },
-  taurus: {
-    label: "おうし座（Taurus）",
-    keyword: "じっくり整える",
-    lines: [
-      "2025年11月は、環境や持ち物を整えることで運気アップ。",
-      "デスクまわりやロッカーを片づけると、仕事のミスも減ってスッキリ。",
-      "丁寧な確認作業が、患者さんや仲間からの信頼につながりそう。"
-    ],
-    tips: [
-      "1日5分だけ「片づけタイム」を作ってみる。",
-      "気になる書類やメモは、1か所にまとめて管理してみる。"
-    ]
-  },
-  gemini: {
-    label: "ふたご座（Gemini）",
-    keyword: "コミュニケーション",
-    lines: [
-      "2025年11月は、「ちょっと一言」が周りを明るくする月。",
-      "雑談や声かけから、役立つ情報や新しい連携が生まれそう。",
-      "患者さんへの説明も、あなたならではの言葉で分かりやすく伝えられるよ。"
-    ],
-    tips: [
-      "1日1回、同僚に「ありがとう」を言葉にして伝える。",
-      "カンファレンスでは、質問を1つしてみる。"
-    ]
-  },
-  cancer: {
-    label: "かに座（Cancer）",
-    keyword: "やさしさと安心感",
-    lines: [
-      "2025年11月は、あなたの「聞く力」が大きな支えになる月。",
-      "患者さんやスタッフの本音を引き出す聞き役として活躍しそう。",
-      "自分自身の心と体のケアも忘れずに、ゆっくり休む時間も大切にしてね。"
-    ],
-    tips: [
-      "1日の終わりに、今日できたことを3つ書き出してみる。",
-      "休憩中に温かい飲み物を飲んでひと息つく。"
-    ]
-  },
-  leo: {
-    label: "しし座（Leo）",
-    keyword: "リーダーシップ",
-    lines: [
-      "2025年11月は、自然と周りを引っ張る役割が回ってきそう。",
-      "前向きな一言や行動が、チーム全体の雰囲気を明るくするよ。",
-      "完璧でなくてもOK。笑顔で進んでいく姿が、みんなの勇気になる。"
-    ],
-    tips: [
-      "困っていそうな人に「何か手伝おうか？」と声をかけてみる。",
-      "カンファレンスで意見を1つ出してみる。"
-    ]
-  },
-  virgo: {
-    label: "おとめ座（Virgo）",
-    keyword: "丁寧さと工夫",
-    lines: [
-      "2025年11月は、「一手間」の工夫がキラリと光る月。",
-      "情報整理やチェックリストづくりが、みんなの助けになりそう。",
-      "観察力の高さが、安全で質の高いケアにつながるタイミング。"
-    ],
-    tips: [
-      "自分用のミニメモやスキマ時間の学習ノートを作ってみる。",
-      "気づいた工夫は、カンファレンスやノートで共有してみる。"
-    ]
-  },
-  libra: {
-    label: "てんびん座（Libra）",
-    keyword: "バランスと調整",
-    lines: [
-      "2025年11月は、仕事とプライベートのバランスを見直すのにぴったり。",
-      "がんばりすぎず、人に頼ることも大切だと感じる場面があるかも。",
-      "あなたの調整力が、チームの雰囲気をまるくおさめてくれるよ。"
-    ],
-    tips: [
-      "シフトの前後で「自分の休む時間」を1つ決めて意識してみる。",
-      "悩んだら一人で抱え込まず、信頼できる人に相談してみる。"
-    ]
-  },
-  scorpio: {
-    label: "さそり座（Scorpio）",
-    keyword: "深く向き合う",
-    lines: [
-      "2025年11月は、一人ひとりの背景に目を向けることで気づきが増える月。",
-      "患者さんの価値観や大切にしていることを知るチャンスがありそう。",
-      "じっくり関わる姿勢が、安心感と信頼につながるよ。"
-    ],
-    tips: [
-      "問診や会話の中で「何が一番不安か」を聞いてみる。",
-      "記録に“その人らしさ”を一言メモしておく。"
-    ]
-  },
-  sagittarius: {
-    label: "いて座（SAGITTARIUS）",
-    keyword: "学びと冒険",
-    lines: [
-      "2025年11月は、新しい知識を吸収するのにぴったりなタイミング。",
-      "がんや緩和ケア、多職種連携など、気になるテーマを深掘りすると◎。",
-      "学んだことをすぐに現場で試すことで、自信にもつながるよ。"
-    ],
-    tips: [
-      "気になるテーマを1つ決めて、パンフレットやWEBで調べてみる。",
-      "研修や勉強会のあとに、学びを1つ誰かにシェアしてみる。"
-    ]
-  },
-  capricorn: {
-    label: "やぎ座（Capricorn）",
-    keyword: "コツコツと積み重ね",
-    lines: [
-      "2025年11月は、小さな努力の積み重ねがしっかり実を結ぶ月。",
-      "苦手だと思っていたことも、少しずつ慣れていけそう。",
-      "周囲はあなたの真面目さと責任感をちゃんと見てくれているよ。"
-    ],
-    tips: [
-      "1日1つだけ「今日これを意識する」というテーマを決める。",
-      "できたことをカレンダーや手帳にチェックして見える化する。"
-    ]
-  },
-  aquarius: {
-    label: "みずがめ座（Aquarius）",
-    keyword: "アイデアとつながり",
-    lines: [
-      "2025年11月は、「こうしたらもっと良くなるかも？」というひらめきが増える月。",
-      "チームでの新しい取り組みや工夫の提案にぴったりのタイミング。",
-      "いつものやり方に、少しだけあなたのアイデアを足してみよう。"
-    ],
-    tips: [
-      "気づいた改善案をメモにしておき、タイミングを見て共有する。",
-      "違う職種の人の話を聞いて、視点の違いを楽しんでみる。"
-    ]
-  },
-  pisces: {
-    label: "うお座（Pisces）",
-    keyword: "共感とやさしさ",
-    lines: [
-      "2025年11月は、あなたのやわらかい雰囲気がみんなの癒しになる月。",
-      "患者さんや家族の気持ちに寄り添うことで、大きな安心を届けられそう。",
-      "ただし、がんばりすぎて自分が疲れないようにセルフケアも忘れずに。"
-    ],
-    tips: [
-      "「つらかったですね」「頑張っていますね」と共感の一言を意識して使う。",
-      "自分の気持ちも誰かに話して、抱え込みすぎないようにする。"
-    ]
-  }
+window.toZodiac = function(){
+  show(screenZodiac);
 };
+
+/* ====== 3 → 4：星座占い ====== */
+const typeTitleEl = document.getElementById('type-title');
+const typeCopyEl = document.getElementById('type-copy');
+const fortuneLinesEl = document.getElementById('fortune-lines');
+const adviceTitleEl = document.getElementById('advice-title');
+const typeDescEl = document.getElementById('type-desc');
 
 function renderFortune(lines){
   fortuneLinesEl.innerHTML = "";
@@ -568,54 +404,50 @@ function renderFortune(lines){
   (function next(){
     if(i >= lines.length) return;
     const div = document.createElement('div');
-    div.className = 'fortune-line';
+    div.className = 'type-line';
     div.textContent = lines[i++];
     fortuneLinesEl.appendChild(div);
     setTimeout(next, 900);
   })();
 }
+function showAdviceTitle(){ adviceTitleEl.style.display='block'; }
 
-function showAdviceTitle(){
-  const at = document.getElementById('advice-title');
-  if(at){ at.style.display = 'block'; }
-}
+const zodiacData = {
+  aries:{label:"おひつじ座（Aries）",keyword:"チャレンジとスタート",lines:["2025年12月は、『やってみよう！』の一歩が大きな成長に。","新しい係やプロジェクトに手を挙げると楽しい展開に。","行動力がチームを前に進めるよ。"],tips:["気になる研修に1つ参加。","小さな目標を決めて取り組む。"]},
+  taurus:{label:"おうし座（Taurus）",keyword:"じっくり整える",lines:["環境を整えるほど運気アップ。","片づけでミスも減ってスッキリ。","丁寧さが信頼につながる。"],tips:["1日5分片づけ。","書類やメモは1か所に。"]},
+  gemini:{label:"ふたご座（Gemini）",keyword:"コミュニケーション",lines:["『ちょっと一言』が周りを明るく。","雑談から新しい連携が生まれそう。","説明のわかりやすさが光る。"],tips:["1日1回ありがとう。","カンファで質問を1つ。"]},
+  cancer:{label:"かに座（Cancer）",keyword:"やさしさと安心感",lines:["『聞く力』が大きな支えに。","本音を引き出す聞き役で活躍。","セルフケアも忘れずに。"],tips:["1日の終わりに『できたこと』を3つ。","温かい飲み物で一息。"]},
+  leo:{label:"しし座（Leo）",keyword:"リーダーシップ",lines:["自然と引っ張る役割が回ってきそう。","前向きな一言が雰囲気を明るく。","笑顔で進む姿が勇気になる。"],tips:["困っている人に声かけ。","カンファで意見を1つ。"]},
+  virgo:{label:"おとめ座（Virgo）",keyword:"丁寧さと工夫",lines:["『一手間』の工夫が光る月。","整理やチェックが助けに。","観察力の高さが安全につながる。"],tips:["ミニメモを作る。","気づいた工夫を共有。"]},
+  libra:{label:"てんびん座（Libra）",keyword:"バランスと調整",lines:["ワークライフの見直しに最適。","人に頼る選択も大切。","あなたの調整力で丸く収まる。"],tips:["休む時間を先に決める。","信頼できる人に相談。"]},
+  scorpio:{label:"さそり座（Scorpio）",keyword:"深く向き合う",lines:["背景に目を向けると気づきが増える。","価値観を知るチャンス。","じっくり姿勢が安心感に。"],tips:["『一番不安は？』を聞く。","“その人らしさ”を一言メモ。"]},
+  sagittarius:{label:"いて座（SAGITTARIUS）",keyword:"学びと冒険",lines:["新しい知識の吸収に最適。","がん・緩和・連携の深掘り◎。","学んだらすぐ試すと自信に。"],tips:["テーマを決めて調べる。","学びを1つシェア。"]},
+  capricorn:{label:"やぎ座（Capricorn）",keyword:"コツコツ",lines:["小さな努力が実を結ぶ月。","苦手も少しずつ慣れていける。","真面目さと責任感は見られている。"],tips:["今日のテーマを1つ決める。","できたら手帳にチェック。"]},
+  aquarius:{label:"みずがめ座（Aquarius）",keyword:"アイデアとつながり",lines:["『もっと良くなるかも？』が増える月。","新しい取り組み提案に◎。","やり方に少しアイデアを追加。"],tips:["改善案をメモ→共有。","他職種の話を聞く。"]},
+  pisces:{label:"うお座（Pisces）",keyword:"共感とやさしさ",lines:["やわらかい雰囲気が癒しに。","寄り添いで大きな安心。","セルフケアも忘れずに。"],tips:["共感の一言を意識。","自分の気持ちも話す。"]}
+};
 
-/* 星座が選ばれたときの処理（3ページ目へ遷移） */
 window.selectZodiac = function(key){
-  ensureBGM();
-  const data = zodiacData[key];
-  if(!data) return;
-
-  const typeTitleEl = document.getElementById('type-title');
-  const typeCopyEl = document.getElementById('type-copy');
-  const typeDescEl = document.getElementById('type-desc');
-
-  typeTitleEl.textContent = "とせいくんの星座占い：2025年11月";
-  typeCopyEl.textContent = data.label + " さんのキーワード：「" + data.keyword + "」";
-
-  // 星のカード風アイコン
-  tarotTable.innerHTML = "";
-  const cardEl = document.createElement('div');
-  cardEl.className = 'tarot-card';
-  cardEl.innerHTML = '<div style="font-size:32px;">⭐</div><div class="cap">' + data.label + '</div>';
-  tarotTable.appendChild(cardEl);
-
-  // 運勢本文
+  const data = zodiacData[key]; if(!data) return;
+  typeTitleEl.textContent = "とせいくんの星座占い：2025年12月";
+  typeCopyEl.textContent  = `${data.label} さんのキーワード：「${data.keyword}」`;
   renderFortune(data.lines);
-
-  // アドバイスリスト
   typeDescEl.innerHTML = "";
-  data.tips.forEach(t=>{
-    const li = document.createElement('li');
-    li.textContent = "🔸 " + t;
-    typeDescEl.appendChild(li);
-  });
-
-  showAdviceTitle();
+  data.tips.forEach(t=>{ const li=document.createElement('li'); li.textContent="🔸 "+t; typeDescEl.appendChild(li); });
+  adviceTitleEl.style.display='block';
   show(screenDiagResult);
 };
 
-/* ===== がん・緩和ケアクイズ ===== */
+/* ====== クイズ ====== */
+const stampEl = document.getElementById('stamp');
+const storyEl = document.getElementById('story');
+const qTitleEl = document.getElementById('q-title');
+const choicesEl = document.getElementById('choices');
+const judgeEl = document.getElementById('judge');
+const explainEl = document.getElementById('explain');
+const nextArea = document.getElementById('next-area');
+const quizImgEl = document.getElementById('quiz-img');
+
 const quiz = [
   {
     story: "🦀 ここからは「がんの標準治療」についてのなぞだよ。",
@@ -644,8 +476,7 @@ const quiz = [
     explain: [
       "正解は ④。",
       "緩和ケアは、病気の早期から、がん治療と並行して行われるものであり、終末期に限られるものではないよ。",
-      "緩和ケアチームのメンバーには、医師や看護師、薬剤師の他、管理栄養士、理学療法士、歯科口腔外科・歯科衛生士、MSW、臨床心理士、臨床工学技士、事務職員など、たくさんの専門職が含まれる！",
-      "陶生病院でも週に1回、メンバーが集まってカンファレンスを行っているよ。"
+      "緩和ケアチームには医師・看護師・薬剤師のほか、多くの専門職が参画！ 陶生病院でも週1回カンファレンスを行っているよ。"
     ]
   },
   {
@@ -659,7 +490,6 @@ const quiz = [
     ],
     explain: [
       "正解は ④ 全部あてはまる。",
-      "患者一人一人を包括的にケアするためには「多職種連携」がとても大切。",
       "病院の中のスタッフだけでなく、患者さん本人・家族、地域のかかりつけ医や訪問看護師、ケアマネージャーなど、たくさんのメンバーがチーム医療の仲間だよ。",
       "退院後もスムーズな療養生活を送れるように、病院と地域がつながって支えていくことがポイント！"
     ]
@@ -667,87 +497,101 @@ const quiz = [
 ];
 let quizIndex = 0;
 
-window.toQuiz = function(){
-  quizIndex = 0;
-  renderQuiz();
-  show(screenQuiz);
-};
+function toQuiz(){ quizIndex=0; renderQuiz(); show(screenQuiz); }
 
 function renderQuiz(){
   const q = quiz[quizIndex];
   storyEl.innerHTML = q.story;
-
-  quizImgEl.src = "mame2.png";
-  quizImgEl.style.display = "inline-block";
-
   qTitleEl.textContent = q.title;
   choicesEl.innerHTML = "";
   judgeEl.textContent = "";
   explainEl.style.display = "none";
   explainEl.innerHTML = "";
   nextArea.style.display = "none";
-
   q.choices.forEach(c=>{
-    const b = document.createElement('button');
-    b.className = 'choice-btn';
-    b.textContent = c.label;
-    b.onclick = ()=>{ judge(c.correct); };
+    const b=document.createElement('button');
+    b.className='choice-btn';
+    b.textContent=c.label;
+    b.onclick=()=>judge(c.correct);
     choicesEl.appendChild(b);
   });
 }
-
-function showStamp(){
-  stampEl.style.display = 'flex';
-  setTimeout(()=>{ stampEl.style.display = 'none'; }, 700);
-}
-
-function judge(isCorrect){
-  if(isCorrect){
-    judgeEl.textContent = "正解！";
-    judgeEl.className = "result ok";
-    try{ seCorrect.currentTime = 0; seCorrect.play(); }catch(e){}
+function showStamp(){ const s=document.getElementById('stamp'); s.style.display='flex'; setTimeout(()=>s.style.display='none',700); }
+function judge(ok){
+  if(ok){
+    judgeEl.textContent="正解！"; judgeEl.className="result ok";
+    try{ seCorrect.currentTime=0; seCorrect.play(); }catch(e){}
     showStamp();
-
-    const q = quiz[quizIndex];
-    explainEl.innerHTML = "<strong>解説</strong><ul style='margin:6px 0 0; padding-left:18px;'>" +
-      q.explain.map(t=>"<li>"+ t +"</li>").join("") + "</ul>";
-    explainEl.style.display = "block";
-    nextArea.style.display = "block";
+    const q=quiz[quizIndex];
+    explainEl.innerHTML="<strong>解説</strong><ul style='margin:6px 0 0; padding-left:18px;'>"+ q.explain.map(t=>"<li>"+t+"</li>").join("") +"</ul>";
+    explainEl.style.display="block"; nextArea.style.display="block";
   }else{
-    judgeEl.textContent = "残念！もう一度選んでみよう。";
-    judgeEl.className = "result ng";
+    judgeEl.textContent="残念！もう一度選んでみよう。"; judgeEl.className="result ng";
+  }
+}
+function goNext(){
+  quizIndex++;
+  if(quizIndex<quiz.length){ renderQuiz(); window.scrollTo({top:0,behavior:'smooth'});}
+  else{
+    // チーム紹介へ：BGM切替
+    try{ bgmAnnounce.pause(); }catch(e){}
+    try{ bgmTeams.volume=0.9; bgmTeams.play(); }catch(e){}
+    show(screenTeamsIntro);
   }
 }
 
-window.goNext = function(){
-  quizIndex++;
-  if(quizIndex < quiz.length){
-    renderQuiz();
-    window.scrollTo({top:0, behavior:'smooth'});
+/* ====== チーム紹介 ====== */
+const teams = [
+  { name:"チーム5N",
+    desc:"僕が察するにこれは5N病棟中心のチームだね。意気込みは「みんなで協力して頑張ります。」だって。これは強そうだね。" },
+  { name:"外科の一味",
+    desc:"文字通り外科病棟のチームかな。一味ということは多職種混合チームかなあ。これは強そうだ。意気込みは「メスのような切れ味で頑張ります。」だって。これは強そうだね。" },
+  { name:"Team BONE",
+    desc:"BONEということは骨ということだよね。これは骨幹がしっかりしていて強そうだ。意気込みは「協力して頑張ります。」だって。間違いなく強いね。" },
+  { name:"とうせい勝手に盛り上げ隊",
+    desc:"これは謎のチームだね。でもとうせいを盛り上げようとする意欲のある人たちだから絶対に強いね。意気込みは「統制を盛り上げます。」だって。盛り上がること間違いなしだね。" },
+  { name:"師長会Y",
+    desc:"これは看護師長のチームかな？Yってどんな意味だろ。誰かのイニシャルなのかな？意気込みは「師長協力して頑張ります。」だって。師長パワーが炸裂しそうだね。" },
+  { name:"チーム保留",
+    desc:"僕が察するにこれは病棟中心のチームだね。意気込みは「みんなで頑張ります。」だって。これは強そうだね。" },
+  { name:"チームこれから決めます",
+    desc:"僕が察するにこれは病棟中心のチームだね。意気込みは「みんなで協力して頑張ります。」だって。これは強そうだね。" },
+  { name:"ICU ERICU",
+    desc:"僕が察するにこれはICU病棟中心のチームだね。意気込みは「みんなで協力して頑張ります。」だって。これは強そうだね。" }
+];
+let teamIdx = -1;
+const teamTitle = document.getElementById('team-title');
+const teamBody  = document.getElementById('team-body');
+const teamNextBtn = document.getElementById('team-next-btn');
+
+function startTeams(){ teamIdx=-1; nextTeam(); show(screenTeamDetail); }
+
+function nextTeam(){
+  teamIdx++;
+  if(teamIdx<teams.length){
+    teamTitle.textContent = `第${teamIdx+1}チーム目は「${teams[teamIdx].name}」だ！！`;
+    teamBody.textContent  = teams[teamIdx].desc;
+    if(teamIdx===teams.length-1){ teamNextBtn.textContent="最後のページへ"; }
+    else{ teamNextBtn.textContent="次へ"; }
+    window.scrollTo({top:0,behavior:'smooth'});
   }else{
-    const nm = (nameEl.value || "名探偵").trim();
-
-    quizImgEl.style.display = "none";
-
-    endingText.innerHTML =
-      "<strong>" + nm + "さん、ありがとう！</strong><br>" +
-      "がん診療では様々な専門職が、告知、治療から療養生活に至るまで統合的に支援しているんだね！！<br><br>" +
-      "TMCでも問題を解決して前に進むには、幅広い知恵と役割が必要そう。自分たちだけで解決しようと思わなくてOK！テレフォンを上手に利用しよう。<br>" +
-      "例えば…薬剤のことは誰が詳しい？ 骨折しているひとの動かし方のプロは？？ 採血や輸血のことは…栄養バランスのことは？？<br><br>" +
-      "「だれ」を、「なに」をテレフォンの先に用意するのか、あらゆる問題に対応できるように準備してみよう！";
-
+    // 最後：一覧と拍手
+    try{ seApplause.currentTime=0; seApplause.play(); }catch(e){}
+    const ul=document.getElementById('team-list');
+    ul.innerHTML="";
+    teams.forEach(t=>{ const li=document.createElement('li'); li.textContent=t.name; ul.appendChild(li); });
     show(screenEnding);
-    launchConfetti();
-    launchSparkles();
-    try{ seClear.currentTime = 0; seClear.play(); }catch(e){}
-    window.scrollTo({top:0, behavior:'smooth'});
+    launchConfetti(); launchSparkles();
   }
-};
+}
 
+/* ====== フィナーレ演出 ====== */
+const confettiEl = document.getElementById('confetti');
+const sparklesEl = document.getElementById('sparkles');
 function launchConfetti(){
   confettiEl.innerHTML = "";
   const colors = ["#ff7ac6","#ffd166","#7bdff2","#c3f0ca","#b5b0ff"];
-  for(let i=0;i<40;i++){
+  for(let i=0;i<42;i++){
     const s = document.createElement('span');
     const size = 8 + Math.random()*10;
     s.style.width = size + "px";
@@ -758,7 +602,6 @@ function launchConfetti(){
     confettiEl.appendChild(s);
   }
 }
-
 function launchSparkles(){
   sparklesEl.innerHTML = "";
   for(let i=0;i<18;i++){
@@ -770,14 +613,14 @@ function launchSparkles(){
     sparklesEl.appendChild(sp);
   }
 }
-
-finishBtn.addEventListener('click', function(){
-  try{ bgm.pause(); }catch(e){}
-  finishMessage.style.display = 'block';
-  finishBtn.disabled = true;
-  finishBtn.textContent = '終了しました';
+document.getElementById('finish-btn').addEventListener('click',()=>{
+  try{ bgmAnnounce.pause(); }catch(e){}
+  try{ bgmTeams.pause(); }catch(e){}
+  const msg=document.getElementById('finish-message');
+  msg.style.display='block';
+  const btn=document.getElementById('finish-btn');
+  btn.disabled=true; btn.textContent='終了しました';
 });
 </script>
-
 </body>
 </html>
