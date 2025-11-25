@@ -178,8 +178,11 @@
       </div>
     </section>
 
-    <!-- 3ページ目：星座選択画面 -->
+    <!-- 3ページ目：星座選択画面（画像追加） -->
     <section id="screen-zodiac" class="card fade" style="display:none;">
+      <div class="hero" style="margin-top:6px;">
+        <img src="toseiuranai.png" alt="星占いをする とせいくん" class="tarot-hero" />
+      </div>
       <div class="muted-box" style="margin:10px 0 14px; line-height:1.9;">
         <p><strong>今年も残りわずかになってきたね。</strong></p>
         <p>今年の残りの<strong>星占い</strong>をしちゃおう</p>
@@ -224,6 +227,16 @@
 
     <!-- 5〜7ページ目：クイズ（3問） -->
     <section id="screen-quiz" class="card fade" style="display:none;">
+      <!-- ★ クイズ最初の画面に表示する前置き（1問目のみ表示） -->
+      <div id="quiz-prologue" class="muted-box" style="margin-bottom:10px; display:none; text-align:left; line-height:1.9;">
+        <p><strong>星座占いはどうだった？</strong></p>
+        <p>僕は<strong>蟹座</strong>なんだけど、蟹座って英語で言うとなんて読むか知ってる？？</p>
+        <p>そう！ <strong>「Cancer（キャンサー）」</strong>　あれれ…なんかどこかで聞いたことある病気と同じだ…</p>
+        <p>今や<strong>2人に1人が罹る</strong>と言われてる「癌」と同じなんだよね。</p>
+        <p>乳癌のしこりが、蟹が張り付いているように見えることから<strong>「蟹」</strong>を意味するギリシャ語が語源だって話！ ふむふむ…</p>
+        <p><strong>なんだかもう少し癌のことが知りたくなってきた！！問題にチャレンジしてみよう</strong></p>
+      </div>
+
       <div id="story" class="lead" style="margin-bottom:8px;"></div>
       <div style="text-align:center; margin:10px 0;">
         <img id="quiz-img" src="mame2.png" alt="とせいくん" style="max-width:140px; border-radius:14px; box-shadow:0 4px 12px rgba(0,0,0,0.1);" />
@@ -447,6 +460,7 @@ const judgeEl = document.getElementById('judge');
 const explainEl = document.getElementById('explain');
 const nextArea = document.getElementById('next-area');
 const quizImgEl = document.getElementById('quiz-img');
+const quizPrologueEl = document.getElementById('quiz-prologue');
 
 const quiz = [
   {
@@ -497,10 +511,20 @@ const quiz = [
 ];
 let quizIndex = 0;
 
-function toQuiz(){ quizIndex=0; renderQuiz(); show(screenQuiz); }
+function toQuiz(){
+  quizIndex=0;
+  renderQuiz();
+  // プロローグは1問目突入時のみ表示
+  quizPrologueEl.style.display = "block";
+  show(screenQuiz);
+}
 
 function renderQuiz(){
   const q = quiz[quizIndex];
+  // 1問目以外ではプロローグを隠す
+  if(quizIndex === 0){ quizPrologueEl.style.display = "block"; }
+  else{ quizPrologueEl.style.display = "none"; }
+
   storyEl.innerHTML = q.story;
   qTitleEl.textContent = q.title;
   choicesEl.innerHTML = "";
