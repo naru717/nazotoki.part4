@@ -593,7 +593,7 @@ function startTeams(){ teamIdx=-1; nextTeam(); show(screenTeamDetail); }
 function nextTeam(){
   teamIdx++;
   if(teamIdx<teams.length){
-    teamTitle.textContent = `第${teamIdx+1}チーム目は「${teams[teamIdx].name}」だ！！`;
+    teamTitle.textContent = `第${teamIdx+1}チーム目は「${teams[teamIdx].name}」というチームだ！！`;
     teamBody.textContent  = teams[teamIdx].desc;
     if(teamIdx===teams.length-1){ teamNextBtn.textContent="最後のページへ"; }
     else{ teamNextBtn.textContent="次へ"; }
