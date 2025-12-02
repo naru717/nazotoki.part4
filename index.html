@@ -320,11 +320,11 @@
   <audio id="seCorrect" src="pinpon.mp3" preload="auto"></audio>
 
 <script>
-/* ====== 初期セット ====== */
-const GOOGLE_FORM_ACTION = ""; // 必要ならURLを入れて有効化
-const ENTRY_NAME = "entry.name";
-const ENTRY_DEPT = "entry.dept";
-const ENTRY_JOB  = "entry.job";
+// ====== Googleフォーム連携設定 ======
+const GOOGLE_FORM_ACTION = "https://docs.google.com/forms/d/e/1FAIpQLScPy-sr9VC3M8akiqDUHCGn2EM5uIFwKQ9dKtk7fKIKEhHQMA/formResponse";
+const ENTRY_NAME = "entry.671897270"; // 名前
+const ENTRY_DEPT = "entry.278938549"; // 所属
+const ENTRY_JOB  = "entry.691760735"; // 職種
 
 function sendToGoogleForm({ name, dept, job }) {
   if(!GOOGLE_FORM_ACTION) return; // 未設定なら送信しない
