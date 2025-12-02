@@ -107,7 +107,8 @@
     position:absolute; width:10px; height:10px; background:radial-gradient(circle, var(--spark) 0%, rgba(255,255,255,0) 70%);
     animation:blink 1.6s ease-in-out infinite;
   }
-  /* 星座選択用 */
+
+  /* 星座選択 */
   .zodiac-grid{
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
@@ -119,6 +120,14 @@
   }
   .zodiac-btn span{display:block; font-size:12px; color:#9ca3af;}
   .zodiac-btn:hover{background:#fff7fc; border-color:#ffb3dc;}
+
+  /* 最終ページの画像だけ小さめに */
+  .ending-img{
+    width:min(60vw, 180px);
+    height:auto;
+    border-radius:24px;
+    box-shadow:0 10px 26px rgba(0,0,0,.12);
+  }
 </style>
 </head>
 <body>
@@ -177,12 +186,9 @@
       </div>
     </section>
 
-    <!-- 3ページ目：星座選択画面（画像追加） -->
+    <!-- 3ページ目：星座選択画面（★画像を削除） -->
     <section id="screen-zodiac" class="card fade" style="display:none;">
-      <div class="hero" style="margin-top:6px;">
-        <img src="uranai.png" alt="星占いをする とせいくん" class="tarot-hero" />
-      </div>
-      <div class="muted-box" style="margin:10px 0 14px; line-height:1.9;">
+      <div class="muted-box" style="margin:6px 0 14px; line-height:1.9;">
         <p><strong>今年も残りわずかになってきたね。</strong></p>
         <p>今年の残りの<strong>星占い</strong>をしちゃおう</p>
         <p><strong>星座を教えて</strong>ね。</p>
@@ -226,7 +232,6 @@
 
     <!-- 5〜7ページ目：クイズ（3問） -->
     <section id="screen-quiz" class="card fade" style="display:none;">
-      <!-- ★ クイズ最初の画面に表示する前置き（1問目のみ表示） -->
       <div id="quiz-prologue" class="muted-box" style="margin-bottom:10px; display:none; text-align:left; line-height:1.9;">
         <p><strong>星座占いはどうだった？</strong></p>
         <p>僕は<strong>蟹座</strong>なんだけど、蟹座って英語で言うとなんて読むか知ってる？？</p>
@@ -276,11 +281,11 @@
       </div>
     </section>
 
-    <!-- 最終ページ：全チーム一覧・締め -->
+    <!-- 最終ページ：全チーム一覧・締め（★画像を小さく） -->
     <section id="screen-ending" class="card fade" style="display:none;">
       <div class="ending-wrap">
         <div class="ending-title">👏 以上が出場チームだ！</div>
-        <img src="nazotoki2.png" alt="とせいくん" class="tarot-hero" />
+        <img src="nazotoki2.png" alt="とせいくん" class="ending-img" />
         <div class="ending-lines">
           <div class="ending-badge">TMC出場チーム一覧</div>
           <ul id="team-list" style="text-align:left; margin:8px 0 0; padding-left:18px;"></ul>
