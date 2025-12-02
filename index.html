@@ -128,6 +128,13 @@
     border-radius:24px;
     box-shadow:0 10px 26px rgba(0,0,0,.12);
   }
+
+  /* トースト */
+  .toast{
+    position:fixed; left:50%; bottom:20px; transform:translateX(-50%);
+    background:#111; color:#fff; padding:10px 14px; border-radius:12px;
+    opacity:.95; z-index:9999; box-shadow:0 6px 18px rgba(0,0,0,.25);
+  }
 </style>
 </head>
 <body>
@@ -186,7 +193,7 @@
       </div>
     </section>
 
-    <!-- 3ページ目：星座選択画面（★画像を削除） -->
+    <!-- 3ページ目：星座選択画面（画像なし） -->
     <section id="screen-zodiac" class="card fade" style="display:none;">
       <div class="muted-box" style="margin:6px 0 14px; line-height:1.9;">
         <p><strong>今年も残りわずかになってきたね。</strong></p>
@@ -209,7 +216,7 @@
       </div>
     </section>
 
-    <!-- 4ページ目：星占い結果（前の構成を継承） -->
+    <!-- 4ページ目：星占い結果 -->
     <section id="screen-diag-result" class="card fade" style="display:none;">
       <div id="type-title" class="question">とせいくんの星座占い</div>
       <div id="type-copy" class="lead"></div>
@@ -281,7 +288,7 @@
       </div>
     </section>
 
-    <!-- 最終ページ：全チーム一覧・締め（★画像を小さく） -->
+    <!-- 最終ページ：全チーム一覧・締め（小さめ画像） -->
     <section id="screen-ending" class="card fade" style="display:none;">
       <div class="ending-wrap">
         <div class="ending-title">👏 以上が出場チームだ！</div>
@@ -320,21 +327,13 @@
   <audio id="seCorrect" src="pinpon.mp3" preload="auto"></audio>
 
 <script>
-// ====== Googleフォーム連携設定 ======
+/* ====== Googleフォーム連携設定（あなたの値で確定） ====== */
 const GOOGLE_FORM_ACTION = "https://docs.google.com/forms/d/e/1FAIpQLScPy-sr9VC3M8akiqDUHCGn2EM5uIFwKQ9dKtk7fKIKEhHQMA/formResponse";
 const ENTRY_NAME = "entry.671897270"; // 名前
 const ENTRY_DEPT = "entry.278938549"; // 所属
 const ENTRY_JOB  = "entry.691760735"; // 職種
 
-function sendToGoogleForm({ name, dept, job }) {
-  if(!GOOGLE_FORM_ACTION) return; // 未設定なら送信しない
-  const fd = new FormData();
-  fd.append(ENTRY_NAME, name);
-  fd.append(ENTRY_DEPT, dept);
-  fd.append(ENTRY_JOB, job);
-  fetch(GOOGLE_FORM_ACTION, { method: "POST", body: fd, mode: "no-cors" });
-}
-
+/* ====== DOM参照 ====== */
 const nameEl  = document.getElementById('name');
 const groupEl = document.getElementById('group');
 const jobEl   = document.getElementById('job');
@@ -366,6 +365,30 @@ document.addEventListener('click', e=>{
   try{ seClick.currentTime = 0; seClick.play(); }catch(e){}
 }, true);
 
+/* ====== 送信：URLエンコードで no-cors ====== */
+function sendToGoogleForm({ name, dept, job }) {
+  const params = new URLSearchParams();
+  params.append(ENTRY_NAME, name ?? "");
+  params.append(ENTRY_DEPT, dept ?? "");
+  params.append(ENTRY_JOB,  job ?? "");
+  params.append("submit", "Submit"); // 互換目的（無くてもOK）
+
+  fetch(GOOGLE_FORM_ACTION, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: params
+  }).catch(()=>{});
+}
+
+/* ====== トースト（送信したことだけ知らせる） ====== */
+function toast(msg){
+  const t=document.createElement('div');
+  t.className="toast"; t.textContent=msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(), 1800);
+}
+
 /* ====== 1 → 2：タイプライター演出 ====== */
 const L1 = "TMCマスコットキャラクターのとせいくんだよ。今日はみんなに嬉しいお知らせがあるんだ。";
 const L2 = "なんとTMCの出場チームが決まったよ！！";
@@ -383,19 +406,27 @@ function typeLine(el, text, speed=28){
 }
 
 window.goPre = function(){
+  // 必須3項目のチェック（フォーム側が必須なので合わせる）
   if(!nameEl.value.trim()){ nameEl.focus(); nameEl.style.borderColor='#ff8dc7'; return; }
+  if(!groupEl.value.trim()){ groupEl.focus(); groupEl.style.borderColor='#ff8dc7'; return; }
+  if(!jobEl.value.trim()){ jobEl.focus(); jobEl.style.borderColor='#ff8dc7'; return; }
   nameEl.style.borderColor='#ffdff0';
+  groupEl.style.borderColor='#ffdff0';
+  jobEl.style.borderColor='#ffdff0';
+
+  // 送信
   sendToGoogleForm({ name: nameEl.value, dept: groupEl.value, job: jobEl.value });
-  // BGM開始（2ページ目で流す）
+  toast("フォームに送信しました（回答タブでご確認ください）");
+
+  // BGM開始 → 2ページ目へ
   try{ bgmAnnounce.volume = 0.85; bgmAnnounce.play(); }catch(e){}
   show(screenAnn);
-  // セリフ順番に
   (async ()=>{
     const el1 = document.getElementById('typeL1');
     const el2 = document.getElementById('typeL2');
     const el3 = document.getElementById('typeL3');
     await typeLine(el1, L1);
-    await new Promise(r=>setTimeout(r, 3000)); // 3秒待機
+    await new Promise(r=>setTimeout(r, 3000));
     await typeLine(el2, L2);
     try{ seApplause.currentTime = 0; seApplause.play(); }catch(e){}
     await new Promise(r=>setTimeout(r, 600));
@@ -518,14 +549,12 @@ let quizIndex = 0;
 function toQuiz(){
   quizIndex=0;
   renderQuiz();
-  // プロローグは1問目突入時のみ表示
-  quizPrologueEl.style.display = "block";
+  quizPrologueEl.style.display = "block"; // 1問目のみ表示
   show(screenQuiz);
 }
 
 function renderQuiz(){
   const q = quiz[quizIndex];
-  // 1問目以外ではプロローグを隠す
   if(quizIndex === 0){ quizPrologueEl.style.display = "block"; }
   else{ quizPrologueEl.style.display = "none"; }
 
@@ -561,7 +590,6 @@ function goNext(){
   quizIndex++;
   if(quizIndex<quiz.length){ renderQuiz(); window.scrollTo({top:0,behavior:'smooth'});}
   else{
-    // チーム紹介へ：BGM切替
     try{ bgmAnnounce.pause(); }catch(e){}
     try{ bgmTeams.volume=0.9; bgmTeams.play(); }catch(e){}
     show(screenTeamsIntro);
@@ -593,7 +621,6 @@ const teamBody  = document.getElementById('team-body');
 const teamNextBtn = document.getElementById('team-next-btn');
 
 function startTeams(){ teamIdx=-1; nextTeam(); show(screenTeamDetail); }
-
 function nextTeam(){
   teamIdx++;
   if(teamIdx<teams.length){
@@ -603,7 +630,6 @@ function nextTeam(){
     else{ teamNextBtn.textContent="次へ"; }
     window.scrollTo({top:0,behavior:'smooth'});
   }else{
-    // 最後：一覧と拍手
     try{ seApplause.currentTime=0; seApplause.play(); }catch(e){}
     const ul=document.getElementById('team-list');
     ul.innerHTML="";
